@@ -4,6 +4,8 @@ const db = require("./db");
 const app = express();
 app.use(express.json());
 
+//Funções Auxiliares
+
 function idValido(id) {
   return Number.isInteger(id) && id > 0;
 }
@@ -15,6 +17,14 @@ function tituloValido(titulo) {
     titulo.trim().length <= 150
   );
 }
+
+function statusValido(status) {
+  const statusPermitidos = ["aberto", "em_andamento", "resolvido"];
+
+  return statusPermitidos.includes(status);
+}
+
+// Rotas
 
 app.get("/", (req, res) => {
   res.send("Flowdesk API funcionando!");
@@ -92,18 +102,10 @@ app.post("/chamados", async (req, res) => {
         erro: "Usuário não encontrado.",
       });
     }
-  } catch (error) {
-    console.error("Erro ao verificar usuário:", error.message);
 
-    return res.status(500).json({
-      erro: "Erro interno ao verificar usuário.",
-    });
-  }
-
-  try {
     const [resultado] = await db.execute(
       `INSERT INTO chamados (titulo, descricao, usuario_id)
-        VALUES (?, ?, ?)`,
+             VALUES (?, ?, ?)`,
       [titulo.trim(), descricao ?? null, usuario_id],
     );
 
@@ -118,7 +120,7 @@ app.post("/chamados", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Erro ao cadastrar chamado:", error.message);
+    console.error("Erro ao processar chamado:", error.message);
 
     return res.status(500).json({
       erro: "Erro interno ao cadastrar chamado.",
@@ -152,11 +154,9 @@ app.put("/chamados/:id", async (req, res) => {
     });
   }
 
-  const statusPermitidos = ["aberto", "em_andamento", "resolvido"];
-
-  if (!statusPermitidos.includes(status)) {
+  if (!statusValido(status)) {
     return res.status(400).json({
-      erro: "Status inválidos.",
+      erro: "Status inválido.",
     });
   }
 
@@ -171,19 +171,11 @@ app.put("/chamados/:id", async (req, res) => {
         erro: "Chamado não encontrado.",
       });
     }
-  } catch (error) {
-    console.error("Erro ao verificar chamado:", error.message);
 
-    return res.status(500).json({
-      erro: "Erro interno ao verificar chamado.",
-    });
-  }
-
-  try {
     await db.execute(
       `UPDATE chamados
-        SET titulo = ?, descricao =?, status = ?
-        WHERE id = ?`,
+             SET titulo = ?, descricao = ?, status = ?
+             WHERE id = ?`,
       [titulo.trim(), descricao ?? null, status, id],
     );
 
@@ -207,7 +199,7 @@ app.put("/chamados/:id", async (req, res) => {
 
 // Atualização de status do chamado
 
-app.patch("/chamados/:id/status", async (req, res) => {
+app.patch("/chamados/:id", async (req, res) => {
   const id = Number(req.params.id);
   const { titulo, descricao, status } = req.body;
 
@@ -239,14 +231,10 @@ app.patch("/chamados/:id/status", async (req, res) => {
     });
   }
 
-  if (status !== undefined) {
-    const statusPermitidos = ["aberto", "em_andamento", "resolvido"];
-
-    if (!statusPermitidos.includes(status)) {
-      return res.status(400).json({
-        erro: "Status inválido.",
-      });
-    }
+  if (status !== undefined && !statusValido(status)) {
+    return res.status(400).json({
+      erro: "Status inválido.",
+    });
   }
 
   try {
@@ -459,10 +447,43 @@ app.delete("/usuarios/:id", async (req, res) => {
       });
     }
 
-    console.error("Error ao excluir usuário:", error.message);
+    console.error("Erro ao excluir usuário:", error.message);
 
     return res.status(500).json({
       erro: "Erro interno ao excluir usuário.",
+    });
+  }
+});
+
+app.delete("/chamados/:id", async (req, res) => {
+  const id = Number(req.params.id);
+
+  if (!idValido(id)) {
+    return res.status(400).json({
+      erro: "ID do chamado inválido.",
+    });
+  }
+
+  try {
+    const [resultado] = await db.execute("DELETE FROM chamados WHERE id = ?", [
+      id,
+    ]);
+
+    if (resultado.affectedRows === 0) {
+      return res.status(404).json({
+        erro: "Chamado não encontrado.",
+      });
+    }
+
+    return res.status(200).json({
+      mensagem: "Chamado excluído com sucesso.",
+      id,
+    });
+  } catch (error) {
+    console.error("Erro ao excluir chamado:", error.message);
+
+    return res.status(500).json({
+      erro: "Erro interno ao excluir chamado.",
     });
   }
 });
