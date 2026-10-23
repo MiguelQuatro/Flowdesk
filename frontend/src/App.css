@@ -1,0 +1,188 @@
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: #202938;
+  background: #f5f7fb;
+}
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 235px;
+  flex-shrink: 0;
+  padding: 28px 20px;
+  background: #172033;
+  color: white;
+}
+
+.sidebar h2 {
+  margin: 0 0 42px;
+  font-size: 24px;
+}
+
+.menu-label {
+  color: #9aa6bb;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.sidebar nav {
+  display: grid;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.sidebar a {
+  padding: 12px;
+  border-radius: 7px;
+  color: #cbd5e1;
+  text-decoration: none;
+}
+
+.sidebar a.active {
+  color: white;
+  background: #34435e;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 32px;
+  background: white;
+  border-bottom: 1px solid #e5e9f0;
+}
+
+.dashboard {
+  padding: 32px;
+}
+
+.page-heading,
+.card-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.page-heading {
+  margin-bottom: 28px;
+}
+
+.page-heading h1 {
+  margin: 0 0 8px;
+  font-size: 28px;
+}
+
+.page-heading p {
+  margin: 0;
+  color: #697586;
+}
+
+.new-ticket {
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 7px;
+  background: #3459db;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.ticket-card {
+  overflow-x: auto;
+  padding: 24px;
+  border: 1px solid #e5e9f0;
+  border-radius: 12px;
+  background: white;
+}
+
+.card-heading {
+  margin-bottom: 20px;
+}
+
+.card-heading h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.card-heading span {
+  color: #697586;
+  font-size: 13px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  white-space: nowrap;
+}
+
+th,
+td {
+  padding: 16px 12px;
+  border-bottom: 1px solid #edf0f5;
+}
+
+th {
+  color: #697586;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+td {
+  font-size: 14px;
+}
+
+.status {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.status.aberto {
+  background: #fff0d2;
+  color: #996400;
+}
+
+.status.em_andamento {
+  background: #dceafe;
+  color: #2456b3;
+}
+
+@media (max-width: 700px) {
+  .sidebar {
+    width: 150px;
+    padding: 20px 12px;
+  }
+
+  .topbar,
+  .dashboard {
+    padding: 20px 16px;
+  }
+
+  .page-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .ticket-card {
+    padding: 12px;
+  }
+}
