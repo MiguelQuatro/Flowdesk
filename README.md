@@ -1,22 +1,28 @@
 # Flowdesk
 
-Sistema de gestão de chamados e atendimento interno para organizar solicitações, priorizar pendências e acompanhar o status das demandas em um único lugar.
+Sistema de gestão de chamados e atendimento interno para organizar demandas, priorizar pendências e acompanhar o andamento das solicitações em um único ambiente.
+
+🚧 Status: em desenvolvimento. A API de usuários e chamados e a interface básica já funcionam. Autenticação, filtros e testes estão no roadmap.
 
 ## Problema
 
 Quando a operação cresce, solicitações começam a aparecer em mensagens, planilhas, e-mails e atendimento manual. Isso gera perda de contexto, atrasos, retrabalho e dificuldade para saber o que já foi resolvido.
 
-O Flowdesk centraliza esse processo em uma API e em um painel simples para registrar usuários, criar chamados, acompanhar status e manter o histórico de atendimento em um único ambiente.
+O Flowdesk centraliza esse processo em uma API e em um painel simples para registrar usuários, criar chamados e acompanhar o status das demandas em um único lugar.
 
 ## Funcionalidades
 
-- Cadastro de usuários
-- Criação de chamados
-- Atualização de status
-- Consulta e listagem de chamados
-- Relacionamento entre usuário e chamado
-- API REST para futuras integrações
-- Interface web para uso prático do sistema
+### Já implementado
+- [x] CRUD de usuários
+- [x] Criação e listagem de chamados
+- [x] Atualização de status (aberto, em_andamento, resolvido)
+- [x] Relacionamento usuário → chamados (1:N)
+
+### Em andamento / planejado
+- [ ] Autenticação (JWT + bcrypt)
+- [ ] Filtros por status, usuário e data
+- [ ] Histórico de alterações do chamado
+- [ ] Testes automatizados
 
 ## Stack tecnológica
 
@@ -38,29 +44,21 @@ git clone https://github.com/MiguelQuatro/Flowdesk.git
 cd Flowdesk
 ```
 
-### 2) Instale as dependências do backend
+### 2) Instale as dependências
 
 ```bash
 npm install
 ```
 
-### 3) Instale as dependências do frontend
+### 3) Configure o ambiente
 
-```bash
-cd frontend
-npm install
-cd ..
-```
-
-### 4) Configure o ambiente
-
-Crie um arquivo `.env` na raiz do projeto com base no exemplo:
+Crie o arquivo `.env` na raiz do projeto com base no exemplo:
 
 ```bash
 cp .env.example .env
 ```
 
-Preencha com as informações do seu banco MySQL:
+Exemplo de configuração:
 
 ```env
 DB_HOST=localhost
@@ -71,7 +69,9 @@ DB_NAME=flowdesk
 PORT=3000
 ```
 
-### 5) Crie o banco de dados
+> O arquivo `.env` fica localmente e não deve ser enviado ao repositório.
+
+### 4) Crie o banco de dados
 
 No MySQL, execute:
 
@@ -96,10 +96,10 @@ CREATE TABLE chamados (
 );
 ```
 
-### 6) Inicie a API
+### 5) Inicie a API
 
 ```bash
-node server.js
+npm start
 ```
 
 A API ficará disponível em:
@@ -108,10 +108,11 @@ A API ficará disponível em:
 http://localhost:3000
 ```
 
-### 7) Inicie o frontend
+### 6) Inicie o frontend
 
 ```bash
 cd frontend
+npm install
 npm run dev
 ```
 
@@ -125,12 +126,12 @@ http://localhost:5173
 
 ```text
 Flowdesk/
-├── server.js
-├── db.js
-├── package.json
 ├── .env.example
 ├── .gitignore
 ├── README.md
+├── db.js
+├── package.json
+├── server.js
 ├── routes/
 │   └── usuarios.js
 ├── frontend/
@@ -138,8 +139,7 @@ Flowdesk/
 │   ├── vite.config.js
 │   ├── src/
 │   └── public/
-├── .env
-└── LICENSE
+└── .env  (criado localmente, ignorado pelo Git)
 ```
 
 ## API
@@ -163,13 +163,11 @@ Flowdesk/
 ## Modelo de dados
 
 ### Usuários
-
 - id
 - nome
 - ativo
 
 ### Chamados
-
 - id
 - titulo
 - descricao
@@ -203,6 +201,7 @@ Recomendações para evolução:
 - [ ] Melhorar visual do frontend com dashboard de chamados
 - [ ] Adicionar filtros por status, usuário e data
 - [ ] Implementar testes automatizados
+- [ ] Histórico de alterações do chamado
 
 ## Decisões técnicas
 
@@ -240,11 +239,6 @@ Miguel Quatro
 
 - GitHub: https://github.com/MiguelQuatro
 
-## Licença
-
-Este projeto é um base de estudo e desenvolvimento. Ajuste a licença conforme o uso desejado.
-
 ---
 
 Flowdesk foi pensado para organizar demandas e melhorar o controle de chamados em um ambiente simples, fácil de entender e pronto para evoluir.
-
