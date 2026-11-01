@@ -6,7 +6,7 @@ Sistema de gestão de chamados e atendimento interno para organizar demandas, pr
 
 ## Problema
 
-Quando a operação cresce, solicitações começam a aparecer em mensagens, planilhas, e-mails e atendimento manual. Isso gera perda de contexto, atrasos, retrabalho e dificuldade para saber o que já foi resolvido.
+Quando a operação cresce, solicitações começam a aparecer em mensagens, planilhas, e-mails e atendimento manual. Isso gera perda de contexto, atrasos, retrabalho e dificuldade para saber o que está pendente.
 
 O Flowdesk centraliza esse processo em uma API e em um painel simples para registrar usuários, criar chamados e acompanhar o status das demandas em um único lugar.
 
