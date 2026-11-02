@@ -9,6 +9,8 @@ function App() {
   const [titulo, setTitulo] = useState("");
   const [descricao, setDescricao] = useState("");
   const [salvando, setSalvando] = useState(false);
+  const [chamadoParaExcluir, setChamadoParaExcluir] = useState(null);
+  const [excluindo, setExcluindo] = useState(false);
 
   useEffect(() => {
     async function buscarChamados() {
@@ -110,17 +112,12 @@ function App() {
   }
 
   async function excluirChamado(chamado) {
-    const confirmar = window.confirm(
-      `Deseja realmente excluir o chamado "${chamado.titulo}"?`,
-    );
-
-    if (!confirmar) {
-      return;
-    }
+    setExcluindo(true);
+    setErro("");
 
     try {
       const resposta = await fetch(
-        `http://localhost:3000/chamados/${chamados.chamado_id}`,
+        "http://localhost:3000/chamados/" + chamado.chamado_id,
         {
           method: "DELETE",
         },
@@ -135,10 +132,19 @@ function App() {
       setChamados((listaAtual) =>
         listaAtual.filter((item) => item.chamado_id !== chamado.chamado_id),
       );
+
+      setChamadoParaExcluir(null);
     } catch (erro) {
-      window.alert(erro.message);
+      setErro(
+        erro instanceof TypeError
+          ? "Não foi possível conectar ao servidor. Tente novamente."
+          : erro.message,
+      );
+    } finally {
+      setExcluindo(false);
     }
   }
+
   if (carregando) {
     return <p>Carregando chamados...</p>;
   }
@@ -265,7 +271,7 @@ function App() {
                     <td>
                       <button
                         type="button"
-                        onClick={() => excluirChamado(chamado)}
+                        onClick={() => setChamadoParaExcluir(chamado)}
                       >
                         Excluir
                       </button>
@@ -275,6 +281,62 @@ function App() {
               </tbody>
             </table>
           </div>
+          {chamadoParaExcluir && (
+            <div
+              className="modal-overlay"
+              onClick={() => {
+                if (!excluindo) {
+                  setChamadoParaExcluir(null);
+                }
+              }}
+            >
+              <div
+                className="modal-confirmacao"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="titulo-modal"
+                onClick={(evento) => evento.stopPropagation()}
+              >
+                <div className="modal-icone">!</div>
+
+                <h2 id="titulo-modal">Excluir chamado?</h2>
+
+                <p>
+                  Tem certeza de que deseja excluir este chamado? Essa ação não
+                  poderá ser desfeita.
+                </p>
+
+                <div className="modal-nome-chamado">
+                  #{chamadoParaExcluir.chamado_id} — {chamadoParaExcluir.titulo}
+                </div>
+
+                {erro && <p role="alert">Erro: {erro}</p>}
+
+                <div className="modal-acoes">
+                  <button
+                    type="button"
+                    className="botao-cancelar"
+                    disabled={excluindo}
+                    onClick={() => {
+                      setChamadoParaExcluir(null);
+                      setErro("");
+                    }}
+                  >
+                    Cancelar
+                  </button>
+
+                  <button
+                    type="button"
+                    className="botao-excluir"
+                    disabled={excluindo}
+                    onClick={() => excluirChamado(chamadoParaExcluir)}
+                  >
+                    {excluindo ? "Excluindo..." : "Excluir chamado"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </section>
       </main>
     </div>
